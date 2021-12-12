@@ -1,0 +1,12 @@
+[submodule "GenX_Generated/AzureSphereDevX"]
+	path = GenX_Generated/AzureSphereDevX
+	url = https://github.com/Azure-Sphere-DevX/AzureSphereDevX.git
+[submodule "GenX_Generated/AzureSphereDrivers"]
+	path = GenX_Generated/AzureSphereDrivers
+	url = https://github.com/Azure-Sphere-DevX/AzureSphereDrivers.git
+[submodule "GenX_Generated/HardwareDefinitions"]
+	path = GenX_Generated/HardwareDefinitions
+	url = https://github.com/Azure-Sphere-DevX/AzureSphereDevX.HardwareDefinitions.git
+[submodule "GenX_Generated/Tools"]
+	path = GenX_Generated/Tools
+	url = https://github.com/Azure-Sphere-DevX/AzureSphereDevX.Tools.git
