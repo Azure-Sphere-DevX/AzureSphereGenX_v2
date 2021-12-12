@@ -1,0 +1,16 @@
+#pragma once
+
+#include "dx_azure_iot.h"
+#include "dx_config.h"
+#include "dx_exit_codes.h"
+#include "dx_gpio.h"
+#include "dx_json_serializer.h"
+#include "dx_terminate.h"
+#include "dx_timer.h"
+#include "dx_version.h"
+#include "dx_deferred_update.h"
+
+
+/****************************************************************************************
+ * Forward declarations
+ ****************************************************************************************/

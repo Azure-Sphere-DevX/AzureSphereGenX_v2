@@ -1,0 +1,15 @@
+/// <summary>
+/// What is the purpose of this device twin handler function?
+/// </summary>
+/// <param name="deviceTwinBinding"></param>
+static DX_DEFINE_DEVICETWIN_HANDLER({name}_gx_handler, deviceTwinBinding)
+{{
+    Log_Debug("Device Twin Property Name: %s\n", deviceTwinBinding->propertyName);
+    void *value = deviceTwinBinding->propertyValue;
+    {lambda_code}
+    // implement your device twin logic
+
+    dx_deviceTwinAckDesiredState(deviceTwinBinding, deviceTwinBinding->propertyValue, DX_DEVICE_TWIN_RESPONSE_COMPLETED);
+
+}}
+DX_END_DEVICETWIN_HANDLER

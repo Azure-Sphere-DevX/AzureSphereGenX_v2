@@ -1,0 +1,11 @@
+/// <summary>
+/// {name}_gx_handler purpose?
+/// </summary>
+static DX_DEFINE_TIMER_HANDLER({name}_gx_handler)
+{{
+    Log_Debug("Periodic timer {name}_handler called\n");
+
+    // Implement your timer function
+    
+}}
+DX_END_TIMER_HANDLER

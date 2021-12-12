@@ -1,0 +1,1 @@
+static DX_DECLARE_TIMER_HANDLER({name}_gx_handler);

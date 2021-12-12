@@ -1,0 +1,24 @@
+{
+  "SchemaVersion": 1,
+  "Name": "gen_x_example",
+  "ComponentId": "b217fd65-ac8d-4d7c-b62c-0d07b5df6357",
+  "EntryPoint": "/bin/app",
+  "Capabilities": {
+    "Gpio": [
+      "$NETWORK_CONNECTED_LED",
+      "$RELAY"
+    ],
+    "DeviceAuthentication": "REPLACE_WITH_YOUR_TENANT_ID",
+    "AllowedConnections": [
+      "REPLACE_WITH_REQUIRED_ENDPOINTS"
+    ],
+    "SystemEventNotifications": true,
+    "SoftwareUpdateDeferral": true,
+    "PowerControls": []
+  },
+  "ApplicationType": "Default",
+  "CmdArgs": [
+    "--ScopeID",
+    "REPLACE_WITH_YOUR_ID_SCOPE"
+  ]
+}

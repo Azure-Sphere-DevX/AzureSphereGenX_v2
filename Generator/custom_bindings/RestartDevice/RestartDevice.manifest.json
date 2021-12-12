@@ -1,0 +1,11 @@
+{
+  "manifest": {
+    "Capabilities": [
+      {
+        "PowerControls": [
+          "ForceReboot"
+        ]
+      }
+    ]
+  }
+}
