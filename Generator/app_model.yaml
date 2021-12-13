@@ -3,16 +3,15 @@ genx:
   project_path: "../GenX_Generated"
 
 components:
-
   - name: count
     class: Extern
-    enabled: true
+    enabled: false
     properties:
       type: int
 
   - name: FactoryAlertButtonA
     class: GpioInputPoll
-    enabled: true
+    enabled: false
     properties:
       pin: BUTTON_A
       detect: DX_GPIO_DETECT_LOW
@@ -29,7 +28,7 @@ components:
 
   - name: FactoryLight
     class: GpioOutput
-    enabled: true
+    enabled: false
     properties:
       pin: STATUS_LED
       initialState: GPIO_Value_Low
@@ -79,7 +78,8 @@ components:
     properties:
       type: int
       lambda: |
-        if (!IN_RANGE(*(int*)value, 0, 80))
+        // Test device twin int is within range
+            if (!IN_RANGE(*(int*)value, 0, 80))
             {
                 dx_deviceTwinAckDesiredValue(deviceTwinBinding, deviceTwinBinding->propertyValue, DX_DEVICE_TWIN_RESPONSE_ERROR);
             }
@@ -94,7 +94,7 @@ components:
 
   - name: FactoryLightOff
     class: DirectMethodWithContext
-    enabled: true
+    enabled: false
     properties:
       context:
         name: FactoryLight
@@ -102,12 +102,13 @@ components:
 
   - name: Counter
     class: DirectMethodWithContext
-    enabled: true
+    enabled: false
     properties:
       context:
         type: int
         name: count
-      lambda: context++;
+      lambda: |-
+        *context++;
 
   - name: LightControl
     class: DirectMethod
@@ -121,11 +122,7 @@ components:
                 return DX_METHOD_FAILED;
             }}
             bool state = (int)json_object_get_boolean(jsonObject, state_property);
-            if (state){
-              Log_Debug("State is true\n");
-            } else {
-              Log_Debug("State is false\n");
-            }
+            Log_Debug("State: %d\n", (int)state);
 
   - name: FanOff
     class: DirectMethodWithContext
