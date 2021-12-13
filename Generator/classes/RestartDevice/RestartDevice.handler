@@ -1,14 +1,16 @@
 /// <summary>
 /// Start Device Power Restart Direct Method 'ResetMethod' integer seconds eg 5
 /// </summary>
-static DX_DIRECT_METHOD_RESPONSE_CODE {name}_gx_handler(JSON_Value* json, DX_DIRECT_METHOD_BINDING* directMethodBinding, char** responseMsg)
+static DX_DEFINE_DIRECT_METHOD_HANDLER({name}_gx_handler, json, directMethodBinding, responseMsg)
 {{
     if (json_value_get_type(json) != JSONNumber) {{ return DX_METHOD_FAILED; }}
 
     int seconds = (int)json_value_get_number(json);
+    char utc[40] = {{0}};
 
     if (seconds > 2 && seconds < 10)
     {{
+        dx_deviceTwinReportValue(&dt_RestartDeviceUtc, dx_getCurrentUtc(utc, sizeof(utc)));
         dx_timerOneShotSet(&tmr_RestartDeviceDelay, &(struct timespec){{ seconds, 0}});  
         return DX_METHOD_SUCCEEDED;
     }}
@@ -17,3 +19,4 @@ static DX_DIRECT_METHOD_RESPONSE_CODE {name}_gx_handler(JSON_Value* json, DX_DIR
         return DX_METHOD_FAILED;
     }}
 }}
+DX_END_DIRECT_METHOD_HANDLER

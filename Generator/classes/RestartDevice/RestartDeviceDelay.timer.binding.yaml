@@ -1,0 +1,5 @@
+---
+name: RestartDeviceDelay
+variable_template:
+  binding: DX_TIMER_BINDING
+  declare: declare_timer

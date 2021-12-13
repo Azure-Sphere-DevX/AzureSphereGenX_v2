@@ -1,0 +1,25 @@
+/// <summary>
+/// Publish environment sensor telemetry to IoT Hub/Central
+/// </summary>
+/// <param name="eventLoopTimer"></param>
+static DX_DEFINE_TIMER_HANDLER({name}_gx_handler) 
+{{
+    float temperature = 30.0f;
+    float humidity = 60.0f;
+    float pressure = 1010.0f;
+
+    if (dx_isAzureConnected()) 
+    {{
+       	// Serialize telemetry as JSON
+		if (dx_jsonSerialize(gx_PublishTelemetryBuffer, sizeof(gx_PublishTelemetryBuffer), 3,
+							 DX_DEVICE_TWIN_FLOAT, "Temperature", temperature,
+							 DX_DEVICE_TWIN_FLOAT, "Humidity", humidity,
+							 DX_DEVICE_TWIN_FLOAT, "Pressure", pressure))
+		{{
+			Log_Debug("%s\n", gx_PublishTelemetryBuffer);
+			dx_azurePublish(gx_PublishTelemetryBuffer, strlen(gx_PublishTelemetryBuffer), gx_PublishTelemetryMessageProperties,
+							NELEMS(gx_PublishTelemetryMessageProperties), &gx_PublishTelemetryContentProperties);
+        }}
+    }}
+}}
+DX_END_TIMER_HANDLER

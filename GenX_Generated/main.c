@@ -45,7 +45,7 @@ static void InitPeripheralAndHandlers(void)
 	gx_initPeripheralAndHandlers();
 
 	// Uncomment the StartWatchdog when ready for production
-	StartWatchdog();
+	// StartWatchdog();
 }
 
 /// <summary>

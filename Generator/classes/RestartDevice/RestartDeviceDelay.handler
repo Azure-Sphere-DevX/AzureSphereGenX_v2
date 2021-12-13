@@ -1,0 +1,8 @@
+/// <summary>
+/// Restart the Device
+/// </summary>
+static DX_DEFINE_TIMER_HANDLER({name}_gx_handler)
+{{
+    PowerManagement_ForceSystemReboot();
+}}
+DX_END_TIMER_HANDLER

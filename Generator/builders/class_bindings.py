@@ -102,7 +102,9 @@ class Builder():
 
     def build_handler(self, binding, component_name, component_filename):
         # name = component_name.split('.')[0]
-        name = binding.get('name')
+        # name = binding.get('name')
+
+        name = component_name.split('.')[0]
 
         properties = binding.get('properties')
 
@@ -131,10 +133,12 @@ class Builder():
             template = {}
 
         self.templates.update({component_name: template})
-        name = binding.get('name')
-        # signature_template = template.get('signature_template')
-        # if signature_template is not None:
-        #     declare = signature_template.get('declare')
+
+        # try getting the name from the component first then fall back to binding
+        name = template.get('name')
+        if name is None:
+            name = binding.get('name')
+
         declare = template.get('signature_template', 'SIGNATURE_MISSING')
 
         binding = {}

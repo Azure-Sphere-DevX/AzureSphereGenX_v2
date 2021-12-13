@@ -14,7 +14,9 @@
     ],
     "SystemEventNotifications": true,
     "SoftwareUpdateDeferral": true,
-    "PowerControls": []
+    "PowerControls": [
+      "ForceReboot"
+    ]
   },
   "ApplicationType": "Default",
   "CmdArgs": [

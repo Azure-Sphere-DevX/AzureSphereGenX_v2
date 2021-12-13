@@ -148,6 +148,18 @@ components:
         seconds: 5
         nanoseconds: 0
 
+  - name: RestartDevice
+    enabled: false
+    class: RestartDevice
+
+  - name: PublishTelemetry
+    enabled: false
+    class: PublishTelemetry
+    properties:
+      repeat:
+        seconds: 6
+        nanoseconds: 0
+
   - name: Watchdog
     description: Watchdog on a 30 second refresh cadence
     enabled: false
