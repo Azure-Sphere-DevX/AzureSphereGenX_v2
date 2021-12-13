@@ -17,6 +17,8 @@
 #include "gx_bindings.h"
 #include "gx_includes.h"
 
+int count;
+
 
 #define APPLICATION_VERSION "1.5"
 

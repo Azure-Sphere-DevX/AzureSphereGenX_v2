@@ -3,6 +3,13 @@ genx:
   project_path: "../GenX_Generated"
 
 components:
+
+  - name: count
+    class: Extern
+    enabled: true
+    properties:
+      type: int
+
   - name: FactoryAlertButtonA
     class: GpioInputPoll
     enabled: true
@@ -15,7 +22,7 @@ components:
 
   - name: FactoryAlertButtonB
     class: GpioInputPoll
-    enabled: true
+    enabled: false
     properties:
       pin: BUTTON_B
       detect: DX_GPIO_DETECT_LOW
@@ -30,7 +37,7 @@ components:
 
   - name: FactoryFan
     class: GpioOutput
-    enabled: true
+    enabled: false
     properties:
       pin: PIN_0
       initialState: GPIO_Value_Low
@@ -39,7 +46,7 @@ components:
   - name: PressureAlertLevel
     description: Azure IoT device twin cloud to device
     class: DeviceTwinPnPWithContext
-    enabled: true
+    enabled: false
     properties:
       type: float
       context:
@@ -68,7 +75,7 @@ components:
 
   - name: OfficeTargetTemperature
     class: DeviceTwinPnP
-    enabled: true
+    enabled: false
     properties:
       type: int
       lambda: |
@@ -79,7 +86,7 @@ components:
 
   - name: FactoryLightOn
     class: DirectMethodWithContext
-    enabled: true
+    enabled: false
     properties:
       context:
         name: FactoryLight
@@ -93,9 +100,18 @@ components:
         name: FactoryLight
       lambda: dx_gpioOff(context);
 
+  - name: Counter
+    class: DirectMethodWithContext
+    enabled: true
+    properties:
+      context:
+        type: int
+        name: count
+      lambda: context++;
+
   - name: LightControl
     class: DirectMethod
-    enabled: true
+    enabled: false
     properties:
       lambda: |
         // Direct method JSON payload example {{"State":true}}:
@@ -113,7 +129,7 @@ components:
 
   - name: FanOff
     class: DirectMethodWithContext
-    enabled: true
+    enabled: false
     properties:
       context:
         name: FactoryFan
@@ -121,7 +137,7 @@ components:
 
   - name: FanOn
     class: DirectMethodWithContext
-    enabled: true
+    enabled: false
     properties:
       context:
         name: FactoryFan
@@ -129,7 +145,7 @@ components:
 
   - name: MeasureTemperature
     class: Timer
-    enabled: true
+    enabled: false
     properties:
       delay:
         seconds: 5
@@ -137,7 +153,7 @@ components:
 
   - name: Watchdog
     description: Watchdog on a 30 second refresh cadence
-    enabled: true
+    enabled: false
     class: Watchdog
 
   - name: DeferredUpdate
@@ -145,12 +161,12 @@ components:
     warning:
       "The app_manifest.json file is updated with the following capabilities:
       SystemEventNotifications and SoftwareUpdateDeferral"
-    enabled: true
+    enabled: false
     class: DeferredUpdate
 
 azure_iot:
   - name: glovebox-demo
-    enabled: true
+    enabled: false
     pnpModel: "dtmi:com:example:application;1"
     networkInterface: "wlan0"
     manifest:

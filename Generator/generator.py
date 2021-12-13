@@ -150,8 +150,9 @@ def render_variable(f, bindings_tags, var):
     invert = "true" if get_value(
         properties, 'invertPin', True) else "false"
 
-    twin_type = get_value(properties, 'type', None)
-    twin_type = device_twin_types.get(twin_type, 'DX_TYPE_UNKNOWN')
+    type = get_value(properties, 'type', None)
+    # twin_type = get_value(properties, 'type', None)
+    twin_type = device_twin_types.get(type, 'DX_TYPE_UNKNOWN')
 
     detect = get_value(properties, 'detect', 'DX_GPIO_DETECT_LOW')
 
@@ -187,6 +188,7 @@ def render_variable(f, bindings_tags, var):
             twin_type=twin_type,
             repeat=repeat,
             delay=delay,
+            type=type,
             context_name=context_name
         ))
 
@@ -317,10 +319,14 @@ def render_bindings(f):
             continue
 
         for var in var_list:
+            if bindings_tags.get(tag) == None:
+                continue
             variable_list += '&' + bindings_tags.get(tag) + '_' + var + ', '
 
-        if variable_list != '':
-            variable_list = variable_list[:-2]
+        if variable_list == '':
+            continue
+
+        variable_list = variable_list[:-2]
 
         declare_binding = templates.get(
             'declare_bindings_' + tag.lower()).format(variables=variable_list)
@@ -392,7 +398,7 @@ def process_update():
     update_manifest()
 
 
-# process_update()
+process_update()
 
 
 watch_file = 'app_model.yaml'

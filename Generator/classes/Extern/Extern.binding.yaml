@@ -1,0 +1,3 @@
+variable_template:
+  binding: DX_EXTERN
+  declare: declare_extern
