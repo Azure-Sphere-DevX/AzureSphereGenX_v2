@@ -28,15 +28,15 @@ extern const char NETWORK_INTERFACE[];
 // All GPIOs referenced in gpio_bindings with be opened in the gx_initPeripheralAndHandlers function
 static DX_GPIO_BINDING *gpio_bindings[] = {  };
 
-// All timers referenced in timer_bindings will be opened in the gx_initPeripheralAndHandlers function
-#define DECLARE_DX_TIMER_BINDINGS
-static DX_TIMER_BINDING *timer_bindings[] = {  };
-
 // All direct methods referenced in direct_method_bindings will be subscribed to in the gx_initPeripheralAndHandlers function
 static DX_DEVICE_TWIN_BINDING* device_twin_bindings[] = {  };
 
 // All direct methods referenced in direct_method_bindings will be subscribed to in the gx_initPeripheralAndHandlers function
 static DX_DIRECT_METHOD_BINDING *direct_method_bindings[] = {  };
+
+// All timers referenced in timer_bindings will be opened in the gx_initPeripheralAndHandlers function
+#define DECLARE_DX_TIMER_BINDINGS
+static DX_TIMER_BINDING *timer_bindings[] = {  };
 
 
 /****************************************************************************************

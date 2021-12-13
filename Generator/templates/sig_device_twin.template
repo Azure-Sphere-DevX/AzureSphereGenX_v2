@@ -1,1 +1,1 @@
-static void {name}_gx_handler(DX_DEVICE_TWIN_BINDING* deviceTwinBinding);
+static DX_DECLARE_DEVICE_TWIN_HANDLER({name}_gx_handler);

@@ -1,6 +1,6 @@
 ---
 variable_template:
   binding: DX_DEVICE_TWIN_BINDING
-  declare: declare_device_twin_with_handler
+  declare: declare_device_twin_with_context
 properties:
   cloud2device: true

@@ -99,6 +99,17 @@ def render_signatures(f):
         template_key = sig.get('signature_template')
         f.write(templates[template_key].format(name=name))
 
+def get_context_type(context_name):
+    context_type = "void"
+    # Search declared variables for matching variable name to get the type
+    if context_name is not None:
+        for variable_item in variables_block:
+            variable = variables_block.get(variable_item)
+            if context_name == variable.get('name'):                            
+                context_type = variable['variable_template']['binding']
+                break
+
+    return context_type
 
 def generate_timespec(properties, property_name):
     if properties is None:
@@ -159,6 +170,10 @@ def render_variable(f, bindings_tags, var):
     if context is not None:
         context_name = context.get('name', '')
         context_type = context.get('type', None)
+
+        if context_type is None:
+            context_type = get_context_type(context_name)
+        
         if context_type is not None:
             context_name_prefix = bindings_tags.get(context_type, None)
             if context_name_prefix is not None:
@@ -223,12 +238,10 @@ def render_handler_block():
             if context is not None:
                 context_type = context.get('type')
                 context_name = context.get('name')
+
                 # Search declared variables for matching variable name to get the type
                 if context_type is None and context_name is not None:
-                    for variable_item in variables_block:
-                        variable = variables_block.get(variable_item)
-                        if context_name == variable.get('name'):                            
-                            context_type = variable['variable_template']['binding']
+                    context_type = get_context_type(context_name)
 
         if does_handler_exist(code_lines=code_lines, handler=name):
             continue
