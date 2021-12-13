@@ -29,7 +29,7 @@ add_subdirectory("AzureSphereDevX" out)
 # Create executable
 add_executable (${PROJECT_NAME} main.c)
 target_link_libraries (${PROJECT_NAME} applibs pthread gcc_s c azure_sphere_devx)
-target_include_directories(${PROJECT_NAME} PUBLIC AzureSphereDevX/include )
+target_include_directories(${PROJECT_NAME} PUBLIC AzureSphereDevX/include gx_includes)
 
 
 if(AVNET)

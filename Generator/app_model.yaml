@@ -3,18 +3,30 @@ genx:
   project_path: "../GenX_Generated"
 
 components:
+  - name: FactoryLight
+    class: GpioOutput
+    enabled: false
+    properties:
+      pin: NETWORK_CONNECTED_LED
+      initialState: GPIO_Value_Low
+      invertPin: false
+
   - name: PressureAlertLevel
     description: Azure IoT device twin cloud to device
-    class: DeviceTwinPnP
-    enabled: true
+    class: DeviceTwinPnPWithContext
+    enabled: false
     properties:
       type: float
+      context:
+        name: FactoryLight
       lambda: |
         // Test device twin float is within range
-            if (!IN_RANGE(*(float*)value, 800, 1100))
+            if (!IN_RANGE(*(float*)value, 0, 100))
             {
-                dx_deviceTwinAckDesiredState(deviceTwinBinding, deviceTwinBinding->propertyValue, DX_DEVICE_TWIN_ERROR);
+                dx_deviceTwinAckDesiredValue(deviceTwinBinding, deviceTwinBinding->propertyValue, DX_DEVICE_TWIN_RESPONSE_ERROR);
             }
+
+            dx_gpioOn(context);
 
   - name: FactoryTargetTemperature
     description: Avnet IoT Connect device twin cloud to device
@@ -26,7 +38,7 @@ components:
         // Test device twin int is within range
             if (!IN_RANGE(*(int*)value, 0, 120))
             {
-                dx_deviceTwinAckDesiredState(deviceTwinBinding, deviceTwinBinding->propertyValue, DX_DEVICE_TWIN_ERROR);
+                dx_deviceTwinAckDesiredValue(deviceTwinBinding, deviceTwinBinding->propertyValue, DX_DEVICE_TWIN_RESPONSE_ERROR);
             }
 
   - name: OfficeTargetTemperature
@@ -37,33 +49,25 @@ components:
       lambda: |
         if (!IN_RANGE(*(int*)value, 0, 80))
             {
-                dx_deviceTwinAckDesiredState(deviceTwinBinding, deviceTwinBinding->propertyValue, DX_DEVICE_TWIN_ERROR);
+                dx_deviceTwinAckDesiredValue(deviceTwinBinding, deviceTwinBinding->propertyValue, DX_DEVICE_TWIN_RESPONSE_ERROR);
             }
 
-  - name: Light
-    class: GpioOutput
-    enabled: true
-    properties:
-      pin: NETWORK_CONNECTED_LED
-      initialState: GPIO_Value_Low
-      invertPin: false
-
-  - name: OfficeLightOn
-    class: DirectMethodWithContext
-    enabled: true
-    properties:
-      context:
-        type: DX_GPIO_BINDING
-        name: Light
-      lambda: dx_gpioOn(context);
-
-  - name: OfficeLightOff
+  - name: FactoryLightOn
     class: DirectMethodWithContext
     enabled: false
     properties:
       context:
         type: DX_GPIO_BINDING
-        name: Light
+        name: FactoryLight
+      lambda: dx_gpioOn(context);
+
+  - name: FactoryLightOff
+    class: DirectMethodWithContext
+    enabled: false
+    properties:
+      context:
+        type: DX_GPIO_BINDING
+        name: FactoryLight
       lambda: dx_gpioOff(context);
 
   - name: ButtonA
@@ -72,9 +76,16 @@ components:
     properties:
       pin: BUTTON_A
       detect: DX_GPIO_DETECT_LOW
-      period:
+      repeat:
         seconds: 0
         nanoseconds: 200 * ONE_MS
+
+  - name: ButtonB
+    class: GpioInput
+    enabled: false
+    properties:
+      pin: BUTTON_A
+      detect: DX_GPIO_DETECT_LOW
 
   - name: LightControl
     class: DirectMethod
@@ -92,7 +103,7 @@ components:
     class: GpioOutput
     enabled: false
     properties:
-      pin: FAN_PIN
+      pin: RELAY
       initialState: GPIO_Value_Low
       invertPin: false
 
@@ -107,7 +118,7 @@ components:
 
   - name: FanOn
     class: DirectMethodWithContext
-    enabled: true
+    enabled: false
     properties:
       context:
         type: DX_GPIO_BINDING
@@ -115,11 +126,10 @@ components:
       lambda: dx_gpioOn(context);
 
   - name: MeasureTemperature
-    class: TimerPeriodic
-    enabled: true
+    class: Timer
+    enabled: false
     properties:
-      type: periodic
-      period:
+      delay:
         seconds: 5
         nanoseconds: 0
 

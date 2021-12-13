@@ -57,10 +57,7 @@ def load_bindings():
 
     with open(r'app_model.yaml', 'r') as file:
         data = yaml.load(file, Loader=yaml.FullLoader)
-        print(data)  
-        print(data["genx"]["project_path"]) 
         generated_project_path = data["genx"]["project_path"]
-
 
     classes = class_bindings.Builder(data, templates=templates, signatures_block=signatures_block, timer_block=timer_block, variables_block=variables_block,
                                      handlers_block=handlers_block, includes_block=includes_block)
@@ -103,80 +100,99 @@ def render_signatures(f):
         f.write(templates[template_key].format(name=name))
 
 
+def generate_timespec(properties, property_name):
+    if properties is None:
+        return "NULL"
+    timespec = properties.get(property_name)
+    if timespec is None:
+        return "NULL"
+    else:
+        seconds = timespec.get('seconds')
+        nanoseconds = timespec.get('nanoseconds')
+        if seconds is not None and nanoseconds is not None:
+            if type(seconds) is int:
+                seconds = str(seconds)
+            if type(nanoseconds) is int:
+                nanoseconds = str(nanoseconds)
+
+            timespec = "&(struct timespec){ " + \
+                seconds + ", " + nanoseconds + " }"
+            properties[property_name] = timespec
+            return timespec
+
+
+def render_variable(f, bindings_tags, var):
+    device_twin_types = {"int": "DX_DEVICE_TWIN_INT", "float": "DX_DEVICE_TWIN_FLOAT", "double": "DX_DEVICE_TWIN_DOUBLE",
+                         "bool": "DX_DEVICE_TWIN_BOOL",  "string": "DX_DEVICE_TWIN_STRING"}
+
+    delay = None
+    repeat = None
+
+    name = var.get('name')
+
+    properties = var.get('properties')
+    variable_template = var.get('variable_template')
+
+    template_key = variable_template.get('declare')
+    binding = variable_template.get('binding')
+
+    var_list = binding_variables.get(binding, [])
+    var_list.append(name)
+    binding_variables.update({binding: var_list})
+
+    pin = get_value(properties, 'pin', 'GX_PIN_NOT_DECLARED_IN_GENX_MODEL')
+    initialState = get_value(properties, 'initialState', 'GPIO_Value_Low')
+    invert = "true" if get_value(
+        properties, 'invertPin', True) else "false"
+
+    twin_type = get_value(properties, 'type', None)
+    twin_type = device_twin_types.get(twin_type, 'DX_TYPE_UNKNOWN')
+
+    detect = get_value(properties, 'detect', 'DX_GPIO_DETECT_LOW')
+
+    repeat = generate_timespec(properties, 'repeat')
+    delay = generate_timespec(properties, 'delay')
+
+    context = get_value(properties, 'context', None)
+
+    context_name = ""
+    if context is not None:
+        context_name = context.get('name', '')
+        context_type = context.get('type', None)
+        if context_type is not None:
+            context_name_prefix = bindings_tags.get(context_type, None)
+            if context_name_prefix is not None:
+                context_name = context_name_prefix + "_" + context_name
+
+    if template_key is None or templates.get(template_key) is None:
+        print('Key: "{template_key}" not found'.format(
+            template_key=template_key))
+        return
+    else:
+        f.write(templates[template_key].format(
+            name=name,
+            pin=pin,
+            initialState=initialState,
+            invert=invert,
+            detect=detect,
+            twin_type=twin_type,
+            repeat=repeat,
+            delay=delay,
+            context_name=context_name
+        ))
+
+
 def render_variable_block(f):
-    device_twin_types = {"int": "DX_TYPE_INT", "float": "DX_TYPE_FLOAT", "double": "DX_TYPE_DOUBLE",
-                         "bool": "DX_TYPE_BOOL",  "string": "DX_TYPE_STRING"}
+    bindings_tags = yaml.load(templates.get(
+        'declare_bindings_tag'), Loader=yaml.FullLoader)
 
-    bindings_tags = yaml.load(templates.get('declare_bindings_tag'), Loader=yaml.FullLoader)
-
-    for item in variables_block:
-        var = variables_block.get(item)
-
-        name = var.get('name')
-
-        properties = var.get('properties')
-        variable_template = var.get('variable_template')
-
-        template_key = variable_template.get('declare')
-        binding = variable_template.get('binding')
-
-        var_list = binding_variables.get(binding, [])
-        var_list.append(name)
-        binding_variables.update({binding: var_list})
-
-        pin = get_value(properties, 'pin', 'GX_PIN_NOT_DECLARED_IN_GENX_MODEL')
-        initialState = get_value(properties, 'initialState', 'GPIO_Value_Low')
-        invert = "true" if get_value(properties, 'invertPin', True) else "false"
-
-        twin_type = get_value(properties, 'type', None)
-        twin_type = device_twin_types.get(twin_type, 'DX_TYPE_UNKNOWN')
-
-        detect = get_value(properties, 'detect', 'DX_GPIO_DETECT_LOW')
-
-        if properties is not None:
-            period = properties.get('period')
-            if period is not None:
-                seconds = period.get('seconds')
-                nanoseconds = period.get('nanoseconds')
-                if seconds is not None and nanoseconds is not None:
-                    if type(seconds) is int:
-                        seconds = str(seconds)
-                    if type(nanoseconds) is int:
-                        nanoseconds = str(nanoseconds)
-
-                    period = "{ " + seconds + ", " + nanoseconds + " }"
-                    properties['period'] = period
-
-        context = get_value(properties, 'context', None)
-
-        context_name = ""
-        if context is not None:
-            context_name = context.get('name', '')
-            context_type = context.get('type', None)
-            if context_type is not None:
-                context_name_prefix = bindings_tags.get(context_type, None)
-                if context_name_prefix is not None:
-                    context_name = context_name_prefix + "_" + context_name
-            
-
-        if template_key is None or templates.get(template_key) is None:
-            print('Key: "{template_key}" not found'.format(
-                template_key=template_key))
-            continue
-        else:
-            f.write(templates[template_key].format(
-                name=name, 
-                pin=pin,
-                initialState=initialState,
-                invert=invert,
-                detect=detect,
-                twin_type=twin_type,
-                period=period,
-                context_name=context_name
-            ))
-
-        if properties is not None and properties.get('type', '').lower() == 'oneshot' and properties.get('autostart', False) == True:
-            autostart_oneshot_timer_list.append(name)
+    for tag in bindings_tags:
+        for item in variables_block:
+            var = variables_block.get(item)
+            variable_template = var.get('variable_template')
+            binding = variable_template.get('binding')
+            if binding is not None and binding == tag:
+                render_variable(f, bindings_tags, var)
 
 
 def does_handler_exist(code_lines, handler):
@@ -206,7 +222,13 @@ def render_handler_block():
             context = properties.get('context', None)
             if context is not None:
                 context_type = context.get('type')
-       
+                context_name = context.get('name')
+                # Search declared variables for matching variable name to get the type
+                if context_type is None and context_name is not None:
+                    for variable_item in variables_block:
+                        variable = variables_block.get(variable_item)
+                        if context_name == variable.get('name'):                            
+                            context_type = variable['variable_template']['binding']
 
         if does_handler_exist(code_lines=code_lines, handler=name):
             continue
@@ -219,7 +241,7 @@ def render_handler_block():
         else:
             try:
                 block_chars = templates.get(template_key).format(name=name, device_twins_updates=device_twins_updates,
-                                                                 device_twin_variables=device_twin_variables, type=type, 
+                                                                 device_twin_variables=device_twin_variables, type=type,
                                                                  context_type=context_type, lambda_code=lambda_property)
             except:
                 print('ERROR: Problem formatting template "{template_key}". Check regular brackets in the template are escaped as {{{{.'.format(
@@ -233,7 +255,7 @@ def render_handler_block():
             '/// GENX_BEGIN ID:{name} MD5:{hash}\n'.format(name=name, hash=hash_object.hexdigest()))
 
         code_lines.append(templates[template_key].format(name=name, device_twins_updates=device_twins_updates,
-                                                         device_twin_variables=device_twin_variables, type=type, 
+                                                         device_twin_variables=device_twin_variables, type=type,
                                                          context_type=context_type, lambda_code=lambda_property))
         code_lines.append('\n/// GENX_END ID:{name}'.format(name=name))
         code_lines.append("\n\n")
@@ -273,12 +295,17 @@ def render_includes_block():
 
 def render_bindings(f):
     # bindings_tags = json.loads(templates.get('declare_bindings_tag'))
-    bindings_tags = yaml.load(templates.get('declare_bindings_tag'), Loader=yaml.FullLoader)
+    bindings_tags = yaml.load(templates.get(
+        'declare_bindings_tag'), Loader=yaml.FullLoader)
+
     for tag in bindings_tags:
         variable_list = ''
 
         var_list = binding_variables.get(tag, [])
         if len(var_list) == 0:
+            if templates.get('declare_bindings_' + tag.lower()) is not None:
+                f.write(templates.get('declare_bindings_' +
+                        tag.lower()).format(variables=''))
             continue
 
         for var in var_list:
@@ -287,20 +314,11 @@ def render_bindings(f):
         if variable_list != '':
             variable_list = variable_list[:-2]
 
-        declare_binding = templates.get('declare_bindings_' + tag.lower()).format(variables=variable_list)
+        declare_binding = templates.get(
+            'declare_bindings_' + tag.lower()).format(variables=variable_list)
         if declare_binding is not None:
-            f.write(templates.get('declare_bindings_' + tag.lower()).format(variables=variable_list))
-
-
-def render_autostart_timers(f):
-    autostart_timer_list = ''
-    for autostart_timer in autostart_oneshot_timer_list:
-        autostart_timer_list += '&' + 'tmr_' + autostart_timer + ', '
-
-    if autostart_timer_list != '':
-        autostart_timer_list = autostart_timer_list[:-2]
-    f.write(templates.get('declare_bindings_dx_timer_autostart_oneshot').format(
-        autostart_timer_list=autostart_timer_list))
+            f.write(templates.get('declare_bindings_' +
+                    tag.lower()).format(variables=variable_list))
 
 
 def write_main():
@@ -314,7 +332,6 @@ def write_main():
         df.write(templates["declarations"])
 
         render_signatures(df)
-        # device_twins_updates, device_twin_variables = dt.build_publish_device_twins()
 
         df.write("\n")
         write_comment_block(df, 'Binding declarations')
@@ -323,7 +340,6 @@ def write_main():
         df.write("\n")
 
         render_bindings(df)
-        render_autostart_timers(df)
 
         footer = templates["declarations_footer"]
 
@@ -371,7 +387,7 @@ def process_update():
     update_manifest()
 
 
-# process_update()
+process_update()
 
 
 watch_file = 'app_model.yaml'

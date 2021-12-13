@@ -6,7 +6,7 @@ static void {name}_gx_handler(DX_DEVICE_TWIN_BINDING* deviceTwinBinding)
 {{
 	bool result = false;
 
-    Log_Debug("Device Twin Property Name: %s\n", deviceTwinBinding->twinProperty);
+    Log_Debug("Device Twin Property Name: %s\n", deviceTwinBinding->propertyName);
 
     // Checking the twinStateUpdated here will always be true.
     // But it's useful property for other areas of your code.

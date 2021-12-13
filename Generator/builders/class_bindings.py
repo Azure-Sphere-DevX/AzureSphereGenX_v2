@@ -80,7 +80,7 @@ class Builder():
         new_binding.update({"variable_template": variable_template})
 
         key = component_filename + "_" + name
-        print(key)
+        # print(key)
         self.variables_block.update({key: new_binding})
 
     def build_include(self, binding, component_name, component_filename):
@@ -119,7 +119,7 @@ class Builder():
         new_binding.update({'handler_template': component_name})
         new_binding.update({'properties': properties})
         key = component_name + "_" + name
-        print(key)
+        # print(key)
         self.handlers_block.update({key: new_binding})
 
     def build_signature(self, binding, component_name, component_filename):

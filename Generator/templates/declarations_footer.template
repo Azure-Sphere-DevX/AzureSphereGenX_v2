@@ -10,39 +10,26 @@ static void gx_initPeripheralAndHandlers(void)
 #ifdef GX_AZURE_IOT
     dx_azureConnect(&dx_config, NETWORK_INTERFACE, PNP_MODEL_ID);
 #else
-    if (NELEMS(device_twin_binding_set) > 0 || NELEMS(direct_method_binding_set) > 0) {
+    if (NELEMS(device_twin_bindings) > 0 || NELEMS(direct_method_bindings) > 0) {
         dx_azureConnect(&dx_config, NETWORK_INTERFACE, PNP_MODEL_ID);
     }
 #endif // GX_AZURE_IOT
 
-    dx_gpioSetOpen(gpio_bindings, NELEMS(gpio_binding_set));
-    dx_deviceTwinSubscribe(device_twin_binding_set, NELEMS(device_twin_binding_set));
-    dx_directMethodSubscribe(direct_method_binding_set, NELEMS(direct_method_binding_set));
-    dx_timerSetStart(timer_binding_set, NELEMS(timer_binding_set));
-    
-    if (NELEMS(timer_bindings_oneshot) > 0) {
-        for (int i = 0; i < NELEMS(timer_bindings_oneshot); i++) {
-            // defaults to starting all oneshot timers after 1 second
-            dx_timerOneShotSet(timer_bindings_oneshot[i], &(struct timespec){ 1, 0 });
-        }
-    }
+    dx_gpioSetOpen(gpio_bindings, NELEMS(gpio_bindings));
+    dx_deviceTwinSubscribe(device_twin_bindings, NELEMS(device_twin_bindings));
+    dx_directMethodSubscribe(direct_method_bindings, NELEMS(direct_method_bindings));
+    dx_timerSetStart(timer_bindings, NELEMS(timer_bindings));
 
 #ifdef GX_DEFERRED_UPDATE
-   	dx_deferredUpdateRegistration(DeferredUpdateCalculate_gx_handler, DeferredUpdateNotification_gx_handler);
+       dx_deferredUpdateRegistration(DeferredUpdateCalculate_gx_handler, DeferredUpdateNotification_gx_handler);
 #endif
 
 }
 
 static void gx_closePeripheralAndHandlers(void){
-    if (NELEMS(timer_binding_set) > 0) {
-	    dx_timerSetStop(timer_binding_set, NELEMS(timer_binding_set));
-    }
-
-    if (NELEMS(gpio_binding_set) > 0) {
-        dx_gpioSetClose(gpio_binding_set, NELEMS(gpio_binding_set));
-    }
-
-	dx_deviceTwinUnsubscribe();
-	dx_directMethodUnsubscribe();
+    dx_timerSetStop(timer_bindings, NELEMS(timer_bindings));
+    dx_deviceTwinUnsubscribe();
+    dx_directMethodUnsubscribe();
+    dx_gpioSetClose(gpio_bindings, NELEMS(gpio_bindings));
     dx_azureToDeviceStop();
 }

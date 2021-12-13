@@ -1,7 +1,7 @@
 /// <summary>
 /// {name} direct method purpose
 /// </summary>
-static DX_DEFINE_DIRECTMETHOD_HANDLER({name}_gx_handler, json, directMethodBinding, responseMsg) 
+static DX_DEFINE_DIRECT_METHOD_HANDLER({name}_gx_handler, json, directMethodBinding, responseMsg) 
 {{
     {lambda_code}   
     // Example direct method with no payload
@@ -9,4 +9,4 @@ static DX_DEFINE_DIRECTMETHOD_HANDLER({name}_gx_handler, json, directMethodBindi
 
     return DX_METHOD_SUCCEEDED;
 }}
-DX_END_DIRECTMETHOD_HANDLER
+DX_END_DIRECT_METHOD_HANDLER

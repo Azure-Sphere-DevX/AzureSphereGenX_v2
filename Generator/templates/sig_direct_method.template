@@ -1,1 +1,1 @@
-static DX_DECLARE_DIRECTMETHOD_HANDLER({name}_gx_handler);
+static DX_DECLARE_DIRECT_METHOD_HANDLER({name}_gx_handler);

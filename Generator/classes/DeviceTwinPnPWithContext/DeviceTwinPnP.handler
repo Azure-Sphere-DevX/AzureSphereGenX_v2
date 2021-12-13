@@ -4,6 +4,8 @@
 /// <param name="deviceTwinBinding"></param>
 static DX_DEFINE_DEVICE_TWIN_HANDLER({name}_gx_handler, deviceTwinBinding)
 {{
+    {context_type} *context = ({context_type} *)deviceTwinBinding->context;
+    
     Log_Debug("Device Twin Property Name: %s\n", deviceTwinBinding->propertyName);
     void *value = deviceTwinBinding->propertyValue;
     {lambda_code}

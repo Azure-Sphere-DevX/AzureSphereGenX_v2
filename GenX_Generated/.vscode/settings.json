@@ -9,6 +9,7 @@
     "cmake.configureOnOpen": true,
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "files.associations": {
-        "gx_bindings.h": "c"
+        "gx_bindings.h": "c",
+        "gx_includes.h": "c"
     }
 }
