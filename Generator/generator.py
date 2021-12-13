@@ -387,7 +387,7 @@ def process_update():
     update_manifest()
 
 
-process_update()
+# process_update()
 
 
 watch_file = 'app_model.yaml'
