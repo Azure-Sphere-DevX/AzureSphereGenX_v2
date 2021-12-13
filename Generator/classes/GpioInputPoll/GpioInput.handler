@@ -3,10 +3,10 @@
 /// </summary>
 static DX_DEFINE_TIMER_HANDLER({name}_gx_handler)
 {{
-    static GPIO_Value_Type gpio_{name}NewState;
+    static GPIO_Value_Type gpio_{name}_NewState;
 
-    if (dx_gpioStateGet(&gpio_{name}, &gpio_{name}NewState)) {{
-        Log_Debug("gpio_{name}: %d\n", gpio_{name}NewState);
+    if (dx_gpioStateGet(&gpio_{name}, &gpio_{name}_NewState)) {{
+        Log_Debug("gpio_{name}: %d\n", gpio_{name}_NewState);
     }}
 }}
 DX_END_TIMER_HANDLER

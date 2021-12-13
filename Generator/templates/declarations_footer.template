@@ -21,7 +21,7 @@ static void gx_initPeripheralAndHandlers(void)
     dx_timerSetStart(timer_bindings, NELEMS(timer_bindings));
 
 #ifdef GX_DEFERRED_UPDATE
-       dx_deferredUpdateRegistration(DeferredUpdateCalculate_gx_handler, DeferredUpdateNotification_gx_handler);
+       dx_deferredUpdateRegistration(DeferredUpdateCalculate_gx_handler, NULL);
 #endif
 
 }

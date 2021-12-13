@@ -1,6 +1,5 @@
 import json
 import pathlib
-import time
 
 from yaml.events import NodeEvent
 import watcher
@@ -8,7 +7,7 @@ import hashlib
 import cleaner
 import os
 import yaml
-import io
+
 
 from builders import azure_iot_config
 from builders import class_bindings
@@ -21,18 +20,15 @@ variables_block = {}
 handlers_block = {}
 includes_block = {}
 templates = {}
-
-
+binding_variables = {}
 manifest_updates = {}
+
 device_twins_updates = None
 device_twin_variables = None
-autostart_oneshot_timer_list = []
-
 dt = None
-
 builders = None
 
-binding_variables = {}
+
 code_lines = []
 
 # generated_project_path = '../GenX_Generated'
@@ -50,10 +46,6 @@ def load_bindings():
     templates = {}
     binding_variables = {}
     manifest_updates = {}
-
-    # time.sleep(0.5)
-    # with open('app_model.json', 'r') as j:
-    #     data = json.load(j)
 
     with open(r'app_model.yaml', 'r') as file:
         data = yaml.load(file, Loader=yaml.FullLoader)
@@ -99,17 +91,19 @@ def render_signatures(f):
         template_key = sig.get('signature_template')
         f.write(templates[template_key].format(name=name))
 
+
 def get_context_type(context_name):
     context_type = "void"
     # Search declared variables for matching variable name to get the type
     if context_name is not None:
         for variable_item in variables_block:
             variable = variables_block.get(variable_item)
-            if context_name == variable.get('name'):                            
+            if context_name == variable.get('name'):
                 context_type = variable['variable_template']['binding']
                 break
 
     return context_type
+
 
 def generate_timespec(properties, property_name):
     if properties is None:
@@ -173,7 +167,7 @@ def render_variable(f, bindings_tags, var):
 
         if context_type is None:
             context_type = get_context_type(context_name)
-        
+
         if context_type is not None:
             context_name_prefix = bindings_tags.get(context_type, None)
             if context_name_prefix is not None:
@@ -226,6 +220,7 @@ def render_handler_block():
         type = None
         lambda_property = ""
         context_type = ""
+        context_name = ""
 
         # if binding is not None and binding == key_binding:
 
@@ -382,13 +377,10 @@ def load_main():
 
 def validate_schema():
     pass
-    # TODO: app.json schema validation
 
 
 def init_stuff():
-    global autostart_oneshot_timer_list
-
-    autostart_oneshot_timer_list = []
+    pass
 
 
 def process_update():

@@ -10,6 +10,14 @@
 #include "dx_version.h"
 #include "dx_deferred_update.h"
 
+#include "applibs_versions.h"
+#include <applibs/log.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <time.h>
+
+#include "gx_includes.h"
+
 extern DX_USER_CONFIG dx_config;
 extern const char PNP_MODEL_ID[];
 extern const char NETWORK_INTERFACE[];

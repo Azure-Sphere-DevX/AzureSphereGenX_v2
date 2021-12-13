@@ -23,7 +23,7 @@ static uint32_t DeferredUpdateCalculate_gx_handler(uint32_t max_deferral_time_in
 	snprintf(msgBuffer, sizeof(msgBuffer), "Utc: %s, Type: %s, Status: %s, Max defer minutes: %i, Requested minutes: %i", 
 		dx_getCurrentUtc(utc, sizeof(utc)), typeDescription, statusDescription, max_deferral_time_in_minutes, requested_minutes);
 
-	dx_deviceTwinReportState(&dt_DeferredUpdateRequest, msgBuffer);
+	dx_deviceTwinReportValue(&dt_DeferredUpdateRequest, msgBuffer);
 
 	return requested_minutes;
 }}
