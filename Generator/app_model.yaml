@@ -3,11 +3,36 @@ genx:
   project_path: "../GenX_Generated"
 
 components:
+  - name: ButtonA
+    class: GpioInputPoll
+    enabled: false
+    properties:
+      pin: BUTTON_A
+      detect: DX_GPIO_DETECT_LOW
+      repeat:
+        seconds: 0
+        nanoseconds: 200 * ONE_MS
+
+  - name: ButtonB
+    class: GpioInputPoll
+    enabled: false
+    properties:
+      pin: BUTTON_B
+      detect: DX_GPIO_DETECT_LOW
+
   - name: FactoryLight
     class: GpioOutput
     enabled: false
     properties:
-      pin: NETWORK_CONNECTED_LED
+      pin: STATUS_LED
+      initialState: GPIO_Value_Low
+      invertPin: false
+
+  - name: Fan
+    class: GpioOutput
+    enabled: false
+    properties:
+      pin: PIN_0
       initialState: GPIO_Value_Low
       invertPin: false
 
@@ -68,23 +93,6 @@ components:
         name: FactoryLight
       lambda: dx_gpioOff(context);
 
-  - name: ButtonA
-    class: GpioInputPoll
-    enabled: false
-    properties:
-      pin: BUTTON_A
-      detect: DX_GPIO_DETECT_LOW
-      repeat:
-        seconds: 0
-        nanoseconds: 200 * ONE_MS
-
-  - name: ButtonB
-    class: GpioInput
-    enabled: false
-    properties:
-      pin: BUTTON_A
-      detect: DX_GPIO_DETECT_LOW
-
   - name: LightControl
     class: DirectMethod
     enabled: false
@@ -96,14 +104,6 @@ components:
                 return DX_METHOD_FAILED;
             }}
             bool state = (int)json_object_get_boolean(jsonObject, state_property);
-
-  - name: Fan
-    class: GpioOutput
-    enabled: false
-    properties:
-      pin: RELAY
-      initialState: GPIO_Value_Low
-      invertPin: false
 
   - name: FanOff
     class: DirectMethodWithContext

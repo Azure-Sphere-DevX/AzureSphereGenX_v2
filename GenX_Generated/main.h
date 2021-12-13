@@ -1,6 +1,6 @@
 #pragma once
 
-#include "hw/azure_sphere_learning_path.h" // Hardware definition
+#include "hw/azure_sphere_remotex.h" // Hardware definition
 
 #include "dx_azure_iot.h"
 #include "dx_config.h"
