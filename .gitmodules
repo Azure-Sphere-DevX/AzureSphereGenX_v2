@@ -10,3 +10,15 @@
 [submodule "GenX_Generated/Tools"]
 	path = GenX_Generated/Tools
 	url = https://github.com/Azure-Sphere-DevX/AzureSphereDevX.Tools.git
+[submodule "DesktopDevX_Generated/DesktopDevX"]
+	path = DesktopDevX_Generated/DesktopDevX
+	url = https://github.com/Azure-Sphere-DevX/DesktopDevX.git
+[submodule "DesktopDevX_Generated/AzureSphereRemoteX.Client"]
+	path = DesktopDevX_Generated/AzureSphereRemoteX.Client
+	url = https://github.com/Azure-Sphere-DevX/AzureSphereRemoteX.Client.git
+[submodule "DesktopDevX_Generated/HardwareDefinitions"]
+	path = DesktopDevX_Generated/HardwareDefinitions
+	url = https://github.com/Azure-Sphere-DevX/AzureSphereDevX.HardwareDefinitions.git
+[submodule "DesktopDevX_Generated/AzureSphereDrivers"]
+	path = DesktopDevX_Generated/AzureSphereDrivers
+	url = https://github.com/Azure-Sphere-DevX/AzureSphereDrivers.git
