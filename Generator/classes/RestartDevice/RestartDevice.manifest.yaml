@@ -1,0 +1,20 @@
+---
+targets:
+- Timer:
+    name: RestartDeviceDelay
+    binding: DX_TIMER_BINDING
+    properties:
+      repeat:
+        seconds: 4
+        nanoseconds: 0
+    signature_template: sig_timer
+    variable_template: declare_timer
+    handler_templates: 
+    - RestartDeviceDelay.handler
+- DirectMethod:
+    name: RestartDeviceDelay
+    binding: DX_DIRECT_METHOD_BINDING
+    variable_template: declare_direct_method
+    handler_templates: 
+    - RestartDevice.handler
+
